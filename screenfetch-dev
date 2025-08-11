@@ -64,20 +64,15 @@ valid_display=(
 		'mem'
 )
 display=(
-		'distro'
 		'host'
-		'kernel'
-		'uptime'
-		'pkgs'
-		'shell'
-		'res'
-		'de'
-		'wm'
-		'wmtheme'
-		'gtk'
+		'rpimodel'
 		'cpu'
+		'distro'
+		'kernel'
+		'shell'
+		'pkgs'
+		'uptime'
 		'disk'
-		'gpu'
 		'mem'
 )
 # Display Type: ASCII or Text
@@ -658,7 +653,7 @@ detectdistro () {
 							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
 						elif grep -q -i 'Quirinux' /etc/os-release ; then
 							distro='Quirinux'
-							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)	
+							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
 						else
 							distro="Debian"
 						fi
@@ -1343,6 +1338,11 @@ detecthost () {
 		myHost=${myHost/.local}
 	fi
 	verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'"
+}
+
+detectrpimodel () {
+	myRpimodel=$(tr -d '\0' < /proc/device-tree/model)
+	verboseOut "Finding rpimodel...found as '${myRpimodel}'"
 }
 
 # Find Number of Running Processes
@@ -3492,7 +3492,7 @@ asciiText () {
 "$c2      *++++++++++++++++++++*       %s"
 "$c2        @*++++++++++++++*@         %s"
 "$c2             @#====#@ %s")
-		;;		
+		;;
 
 		"Ubuntu")
 			if [[ "$no_color" != "1" ]]; then
@@ -6483,6 +6483,11 @@ infoDisplay () {
 			out_array=( "${out_array[@]}" "$myinfo" )
 			((display_index++))
 		fi
+		if [[ "${display[@]}" =~ "rpimodel" ]]; then
+    	myrpimodel=$(echo -e "$labelcolor Model:$textcolor $myRpimodel")
+    	out_array=( "${out_array[@]}" "$myrpimodel" )
+    	((display_index++))
+    fi
 		if [[ "${display[@]}" =~ "distro" ]]; then
 			if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 				sysArch="$(getconf LONG_BIT)bit"
