@@ -6674,7 +6674,7 @@ infoDisplay () {
 			((display_index++))
 		fi
 		if [[ "${display[@]}" =~ "temp" ]]; then
-      mytemp=$(echo -e "$labelcolor Temp:$textcolor myTemp")
+      mytemp=$(echo -e "$labelcolor Temp:$textcolor $myTemp")
       out_array=( "${out_array[@]}" "$mytemp" )
     	((display_index++))
     fi
