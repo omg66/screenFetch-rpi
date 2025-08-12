@@ -72,6 +72,7 @@ display=(
 		'shell'
 		'pkgs'
 		'uptime'
+		'temp'
 		'disk'
 		'mem'
 )
@@ -1405,6 +1406,11 @@ detectuptime () {
 	verboseOut "Finding current uptime...found as '${uptime}'"
 }
 # Uptime Detection - End
+
+detecttemp () {
+	myTemp=$(vcgencmd measure_temp)
+	verboseOut "Finding temp...found as '${myTemp}'"
+}
 
 
 # Package Count - Begin
@@ -6667,6 +6673,11 @@ infoDisplay () {
 			out_array=( "${out_array[@]}" "$mygpu" )
 			((display_index++))
 		fi
+		if [[ "${display[@]}" =~ "temp" ]]; then
+      mytemp=$(echo -e "$labelcolor Temp:$textcolor myTemp")
+      out_array=( "${out_array[@]}" "$mytemp" )
+    	((display_index++))
+    fi
 		if [[ "${display[@]}" =~ "mem" ]]; then
 			mymem=$(echo -e "$labelcolor RAM:$textcolor $mem")
 			out_array=( "${out_array[@]}" "$mymem" )
